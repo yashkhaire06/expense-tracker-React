@@ -1,0 +1,393 @@
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>React Basics</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #111827;
+            color: #f9fafb;
+            min-height: 100vh;
+        }
+
+
+        /* Main heading */
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+
+
+        /* Form */
+
+        .expense-form {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 30px;
+
+            display: flex;
+            gap: 12px;
+            padding: 20px;
+
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 14px;
+        }
+
+
+        /* Inputs */
+
+        .expense-input {
+            flex: 1;
+
+            padding: 12px 14px;
+
+            background: #111827;
+            color: #f9fafb;
+
+            border: 1px solid #374151;
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            outline: none;
+
+            transition: border 0.2s;
+        }
+
+        .expense-input:focus {
+            border-color: #22c55e;
+        }
+
+        .expense-input::placeholder {
+            color: #9ca3af;
+        }
+
+
+        /* Button */
+
+        .add-button {
+            padding: 12px 18px;
+
+            background: #22c55e;
+            color: #052e16;
+
+            border: none;
+            border-radius: 8px;
+
+            font-size: 15px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .add-button:hover {
+            background: #16a34a;
+            transform: translateY(-1px);
+        }
+
+        .add-button:active {
+            transform: translateY(0);
+        }
+
+
+        /* Expense list */
+
+        .expense-list {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+
+        /* Individual expense */
+
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 16px 20px;
+
+            background: #1f2937;
+
+            border: 1px solid #374151;
+            border-radius: 10px;
+
+            transition: 0.2s;
+        }
+
+        .expense-item:hover {
+            border-color: #4b5563;
+            transform: translateY(-1px);
+        }
+
+
+        .expense-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+
+        .expense-amount {
+            font-size: 16px;
+            font-weight: bold;
+            color: #4ade80;
+        }
+
+
+        /* Mobile */
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .expense-form {
+                flex-direction: column;
+            }
+
+            .add-button {
+                width: 100%;
+            }
+        }
+    </style>
+
+
+  </head>
+  <body>
+    <div class="js-container"></div>
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+    <script src="https://unpkg.com/supersimpledev/chatbot.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+
+    <script type="text/babel">
+
+
+
+    function InputExpenses({itemsData, setItemsData}) {
+
+        const [inputText, setInputText] = React.useState("")
+        const [inputAmount, setInputAmount] = React.useState("")
+
+        function saveInputText(event) {
+            setInputText(event.target.value)
+        }
+
+        function saveInputAmount(event) {
+            setInputAmount(event.target.value)
+        }
+
+        function sendInput() {
+            setItemsData([
+                ...itemsData,
+                {
+                    name: inputText,
+                    amount: inputAmount,
+                    key_id: crypto.randomUUID()
+                }
+            ])
+
+            setInputText("")
+            setInputAmount("")
+        }
+
+        return (
+            <div className="expense-form">
+
+                <input
+                    className="expense-input"
+                    placeholder="Expense name"
+                    value={inputText}
+                    onChange={saveInputText}
+                />
+
+                <input
+                    className="expense-input"
+                    placeholder="Amount"
+                    type="number"
+                    value={inputAmount}
+                    onChange={saveInputAmount}
+                />
+
+                <button
+                    className="add-button"
+                    onClick={sendInput}
+                >
+                    Add Expense
+                </button>
+
+            </div>
+        )
+    }
+
+
+    function ItemData({name, amount}) {
+
+        return (
+            <div className="expense-item">
+                <p className="expense-name">{name}</p>
+                <p className="expense-amount">₹{amount}</p>
+            </div>
+        )
+    }
+
+
+    function ItemsData({itemsData}) {
+
+        return (
+            <div className="expense-list">
+
+                {itemsData.map((itemData) => {
+
+                    return (
+                        <ItemData
+                            name={itemData.name}
+                            amount={itemData.amount}
+                            key={itemData.key_id}
+                        />
+                    )
+
+                })}
+
+            </div>
+        )
+    }
+
+
+    function App(){
+
+            const[itemsData , setItemsData] = React.useState([
+                {
+                    name : "Dinner",
+                    amount : "5000",
+                    key_id : "id-1"
+                },
+                {
+                    name : "Bowling",
+                    amount : "3000",
+                    key_id : "id-2"
+                },
+                {
+                    name : "Shopping",
+                    amount : "10000",
+                    key_id : "id-3"
+                },
+                {
+                    name : "Movie",
+                    amount : "2500",
+                    key_id : "id-4"
+                },
+            ]);
+
+
+
+            return(
+
+                <div className="app">
+                    <h1>Expense Tracker</h1>
+                    <InputExpenses itemsData={itemsData} setItemsData={setItemsData}/>
+                    <ItemsData itemsData={itemsData}/>
+                </div>
+
+            )
+        
+        }
+
+
+
+
+        
+      const container = document.querySelector('.js-container');
+      ReactDOM.createRoot(container).render(<App />);
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
